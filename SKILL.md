@@ -7,20 +7,11 @@ description: "Turn any codebase into a beautiful, interactive single-page HTML c
 
 Transform any codebase into a stunning, interactive single-page HTML course. The output is a single self-contained HTML file (no dependencies except Google Fonts) that teaches how the code works through scroll-based modules, animated visualizations, embedded quizzes, and plain-English translations of code.
 
-## First-Run Welcome
+## Resolving the target
 
-When the skill is first triggered and the user hasn't specified a codebase yet, introduce yourself and explain what you do:
-
-> **I can turn any codebase into an interactive course that teaches how it works — no coding knowledge required.**
->
-> Just point me at a project:
-> - **A local folder** — e.g., "turn ./my-project into a course"
-> - **A GitHub link** — e.g., "make a course from https://github.com/user/repo"
-> - **The current project** — if you're already in a codebase, just say "turn this into a course"
->
-> I'll read through the code, figure out how everything fits together, and generate a beautiful single-page HTML course with animated diagrams, plain-English code explanations, and interactive quizzes. The whole thing runs in your browser — no setup needed.
-
-If the user provides a GitHub link, clone the repo first (`git clone <url> /tmp/<repo-name>`) before starting the analysis. If they say "this codebase" or similar, use the current working directory.
+Default to the current working directory. A GitHub URL gets cloned to a scratch
+directory first (`git clone <url> /tmp/<repo-name>`). Ask which codebase only when
+neither is available.
 
 ## Who This Is For
 
@@ -225,43 +216,28 @@ The visual design should feel like a **beautiful developer notebook** — warm, 
 - **Warm palette**: Off-white backgrounds (like aged paper), warm grays, NO cold whites or blues
 - **Bold accent**: One confident accent color (vermillion, coral, teal — NOT purple gradients)
 - **Distinctive typography**: Display font with personality for headings (Bricolage Grotesque, or similar bold geometric face — NEVER Inter, Roboto, Arial, or Space Grotesk). Clean sans-serif for body (DM Sans or similar). JetBrains Mono for code.
-- **Generous whitespace**: Modules breathe. Max 3-4 short paragraphs per screen.
+- **Generous whitespace**: Modules breathe. Text yields to visuals well before a screen starts reading like a page (the limits under "Show, Don't Tell" above govern).
 - **Alternating backgrounds**: Even/odd modules alternate between two warm background tones for visual rhythm
 - **Dark code blocks**: IDE-style with Catppuccin-inspired syntax highlighting on deep indigo-charcoal (#1E1E2E)
 - **Depth without harshness**: Subtle warm shadows, never black drop shadows
 
 ---
 
-## Gotchas — Common Failure Points
+## The few things not stated above
 
-These are real problems encountered when building courses. Check every one before considering a course complete.
-
-### Tooltip Clipping
-Translation blocks use `overflow: hidden` for code wrapping. If tooltips use `position: absolute` inside the term element, they get clipped by the container. **Fix:** Tooltips must use `position: fixed` and be appended to `document.body`. Calculate position from `getBoundingClientRect()`. This is already specified in the reference files but is the #1 bug that appears in every build.
-
-### Not Enough Tooltips
-The most common failure is under-tooltipping. Non-technical learners don't know terms like REPL, JSON, flag, entry point, PATH, pip, namespace, function, class, module, PR, E2E, or even software names like Blender/GIMP. **Rule of thumb:** if a term wouldn't appear in everyday conversation with a non-technical friend, tooltip it. Err heavily on the side of too many. BUT: don't tooltip terms the user already knows well from their domain (e.g., AI/ML concepts for someone in AI).
-
-### Walls of Text
-The course looks like a textbook instead of an infographic. This happens when you write more than 2-3 sentences in a row without a visual break. Every screen must be at least 50% visual. Convert any list of 3+ items into cards, any sequence into step cards or flow diagrams, any code explanation into a code↔English translation block.
-
-### Recycled Metaphors
-Using "restaurant" or "kitchen" for everything. Every module needs its own metaphor that feels inevitable for that specific concept. If you catch yourself reaching for the same metaphor twice, stop and find one that fits the concept organically.
-
-### Code Modifications
-Trimming, simplifying, or "cleaning up" code snippets from the codebase. The learner should be able to open the real file and see the exact same code. Instead of editing code to be shorter, *choose* naturally short snippets (5-10 lines) from the codebase that illustrate the point.
-
-### Quiz Questions That Test Memory
-Asking "What does API stand for?" or "Which file handles X?" — those test recall, not understanding. Every quiz question should present a new scenario the learner hasn't seen and ask them to *apply* what they learned.
-
-### Scroll-Snap Mandatory
-Using `scroll-snap-type: y mandatory` traps users inside long modules. Always use `proximity`.
-
-### Module Quality Degradation
-Trying to write all modules in one pass causes later modules to be thin and rushed. Build one module at a time and verify each before moving on.
-
-### Missing Interactive Elements
-A module with only text and code blocks, no interactivity. Every module needs at least one of: quiz, data flow animation, group chat, architecture diagram, drag-and-drop. These aren't decorations — they're how non-technical learners actually process information.
+- Don't tooltip terms the learner already knows from their own domain (AI/ML
+  vocabulary for someone who works in AI). Over-tooltip everything else.
+- Build one module at a time and verify each before moving on. Writing all modules
+  in one pass makes the later ones thin.
+- Every module needs at least one interactive element — a quiz, a data-flow
+  animation, a component group chat, an architecture diagram, or a drag-and-drop.
+  These are how a non-technical learner processes the material, not decoration.
+- Every module ends with two things: a one-or-two-sentence quotable the learner can
+  repeat in a meeting ("The API gateway is basically a bouncer — it checks your ID
+  before letting you talk to any of the services behind it"), and a short
+  "what you learned" card they can screenshot.
+- Optional reflection prompts ("How would YOU explain this to a teammate?") are
+  worth adding where a concept is easy to nod along to and hard to restate.
 
 ---
 
